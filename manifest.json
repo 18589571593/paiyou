@@ -1,0 +1,21 @@
+{
+  "name": "排忧旅行社工作台",
+  "short_name": "排忧工作台",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#ffffff",
+  "description": "排忧旅行社内部专用智能语音转录与文案工具。",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
