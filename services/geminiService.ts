@@ -2,10 +2,13 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 
 // Initialize the client
 // Ensure API_KEY is available in the environment
+// Adapted for Vite: uses import.meta.env.VITE_API_KEY
 const getAiClient = () => {
-  const apiKey = process.env.API_KEY;
+  // 优先尝试 Vite 环境变量，如果是在非 Vite 环境（如某些在线沙盒），尝试 fallback 到 process.env
+  const apiKey = import.meta.env.VITE_API_KEY;
+  
   if (!apiKey) {
-    throw new Error("未在环境变量中找到 API 密钥。");
+    throw new Error("未找到 API 密钥。请在 .env 文件中设置 VITE_API_KEY。");
   }
   return new GoogleGenAI({ apiKey });
 };
@@ -110,35 +113,4 @@ export const rewriteText = async (text: string, intensity: number = 5): Promise<
     if (intensity <= 3) {
       intensityGuidance = "保留模式（强度低）：极大程度保留原文的句式、语气和长度。仅替换极少数生僻词或同义词。风格必须与原文高度一致。";
     } else if (intensity <= 7) {
-      intensityGuidance = "平衡模式（强度中）：优化句子结构，使表达更自然流畅。可以适当调整语序，替换常用词汇，但核心信息点和段落结构保持不变。";
-    } else {
-      intensityGuidance = "创意模式（强度高）：大胆重写。彻底改变行文风格和用词习惯。可以在保持原意的前提下，大幅度调整句式、使用比喻或更高级的词汇，甚至改变文章的语气（例如从口语化变为书面化）。";
-    }
-
-    const prompt = `
-      你是一位资深的文案策划。
-      请对以下提供的文本进行“洗稿”或仿写处理。
-      
-      当前洗稿强度等级：${intensity} / 10
-      具体执行策略：${intensityGuidance}
-      
-      任务要求：
-      1. 核心意思和信息量必须保持不变，不得曲解原意。
-      2. **强制输出简体中文**：无论输入文本是繁体还是简体，最终输出结果必须全部转换为**简体中文**。
-      3. 直接输出重写后的文本，不要包含任何解释性语言（如“这是重写后的版本”）。
-
-      待重写文本：
-      ${text}
-    `;
-
-    const response: GenerateContentResponse = await ai.models.generateContent({
-      model: modelId,
-      contents: prompt
-    });
-
-    return response.text || "";
-  } catch (error: any) {
-    console.error("Gemini 洗稿错误:", error);
-    throw new Error(error.message || "文本洗稿失败。");
-  }
-};
+      intensityGuidance = "平衡模式（强度中）：优化句子结构，使表达更自然流畅。可以适当调整语序，替换常用词
